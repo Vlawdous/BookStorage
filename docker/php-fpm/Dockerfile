@@ -15,4 +15,8 @@ RUN docker-php-ext-install pdo pdo_pgsql
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
+# Добавляем XDebug
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
 WORKDIR /var/www

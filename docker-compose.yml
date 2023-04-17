@@ -21,7 +21,12 @@ services:
       context: ./docker/php-fpm
       dockerfile: Dockerfile
     volumes:
+      - ./docker/php-fpm/php.ini:/usr/local/etc/php/php.ini
       - ./:/var/www
+    environment:
+      PHP_IDE_CONFIG: "serverName=Docker"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - postgresql
     ports:
@@ -36,7 +41,7 @@ services:
       POSTGRES_PASSWORD: "book"
       PGDATA: "/var/lib/postgresql/data/pgdata"
     volumes:
-      - ./pgsql:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
