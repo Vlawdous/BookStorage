@@ -54,7 +54,7 @@ class BookProductRepository extends ServiceEntityRepository
     private function getNewHighRatingBooksQueryBuilder(int $daysInterval): QueryBuilder
     {
         $dateStartSearch = (new \DateTime("-{$daysInterval} days"));
-        $selectingColumns = ['b.id', 'p.name', 'p.price', 'b.imageSrc', 'b.publisher', 'b.circulation'];
+        $selectingColumns = ['b.id', 'p.name', 'p.price', 'p.imageSrc', 'b.publisher', 'b.circulation'];
 
         $qb = $this->getBookQueryBuilder($selectingColumns);
         $qb = $this->addNewSelectable($qb, $dateStartSearch);
