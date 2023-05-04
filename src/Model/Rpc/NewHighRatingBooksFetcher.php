@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model\RpcModel;
+namespace App\Model\Rpc;
 
 use App\Service\Book\BookService;
 
@@ -13,8 +13,8 @@ class NewHighRatingBooksFetcher
         $this->bookService = $bookService;
     }
 
-    public function getNewHighRatingBooks(int $daysInterval): array
+    public function getNewHighRatingBooks(int $pageOffset, int $daysInterval): array
     {
-        return $this->bookService->getNewHighRatingBooks($daysInterval);
+        return $this->bookService->getNewHighRatingBooks($pageOffset, $daysInterval);
     }
 }
