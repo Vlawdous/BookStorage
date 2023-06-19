@@ -2,12 +2,10 @@
 
 namespace App\Repository\Book;
 
-use App\Entity\Base\Product;
-use App\Entity\Base\Rating;
 use App\Entity\Book\BookProduct;
+use App\Utils\Pagination\Factory\PaginatorFactory;
+use App\Utils\Pagination\Paginator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,9 +18,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BookProductRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private PaginatorFactory $paginatorFactory;
+
+    public function __construct(ManagerRegistry $registry, PaginatorFactory $paginatorFactory)
     {
         parent::__construct($registry, BookProduct::class);
+        $this->paginatorFactory = $paginatorFactory;
     }
 
     public function save(BookProduct $entity, bool $flush = false): void
@@ -43,48 +44,14 @@ class BookProductRepository extends ServiceEntityRepository
         }
     }
 
-    public function generatorNewHighRatingBooks(int $daysInterval)
+    public function getBooksPaginator(): Paginator
     {
-        $qb = $this->getNewHighRatingBooksQueryBuilder($daysInterval);
-        foreach ($qb->getQuery()->toIterable() as $book) {
-            yield $book;
-        }
-    }
-
-    private function getNewHighRatingBooksQueryBuilder(int $daysInterval): QueryBuilder
-    {
-        $dateStartSearch = (new \DateTime("-{$daysInterval} days"));
-        $selectingColumns = ['b.id', 'p.name', 'p.price', 'p.imageSrc', 'b.publisher', 'b.circulation'];
-
-        $qb = $this->getBookQueryBuilder($selectingColumns);
-        $qb = $this->addNewSelectable($qb, $dateStartSearch);
-        $qb = $this->addRatingSorting($qb, $selectingColumns);
-
-        return $qb;
-    }
-
-    private function getBookQueryBuilder(array $selectingColumns): QueryBuilder
-    {
-        return $this->getEntityManager()
+        $qb = $this->getEntityManager()
             ->createQueryBuilder()
-            ->select($selectingColumns)
-            ->distinct()        // Используется для возможности итерации
+            ->select(['b.id', 'p.name', 'p.price', 'p.imageSrc', 'b.publisher', 'b.circulation'])
             ->from('App:Book\BookProduct', 'b')
             ->innerJoin('b.product', 'p');
-    }
 
-    private function addRatingSorting(QueryBuilder $qb, array $groupingColumns): QueryBuilder
-    {
-        return $qb
-            ->addSelect('AVG(r.ratingValue) AS avgRating')
-            ->innerJoin('p.ratings', 'r')
-            ->groupBy(implode(',', $groupingColumns))
-            ->orderBy('avgRating', 'DESC');
-    }
-
-    private function addNewSelectable(QueryBuilder $qb, \DateTime $dateStartSearch): QueryBuilder
-    {
-        return $qb->where($qb->expr()->gte('b.datePublicate', ':datePublicate'))
-            ->setParameter('datePublicate', $dateStartSearch, Types::DATE_MUTABLE);
+        return $this->paginatorFactory->create($qb);
     }
 }

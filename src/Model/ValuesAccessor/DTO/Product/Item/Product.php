@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model\ValuesAccessor\DTO\Base\Item;
+namespace App\Model\ValuesAccessor\DTO\Product\Item;
 
 class Product extends BaseProduct
 {

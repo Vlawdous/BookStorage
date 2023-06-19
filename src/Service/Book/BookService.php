@@ -4,7 +4,10 @@ namespace App\Service\Book;
 
 use App\Model\ValuesAccessor\DTO\Book\Collection\BookCollection;
 use App\Model\ValuesAccessor\DTO\Book\Item\BaseBook;
+use App\Model\ValuesAccessor\DTO\Product\Collection\ProductPagination;
 use App\Repository\Book\BookProductRepository;
+use App\Utils\Sort\Helper\SortOptions;
+use App\Utils\Sort\Sorter\BookSorter;
 
 class BookService
 {
@@ -15,11 +18,15 @@ class BookService
         $this->bookRepository = $bookRepository;
     }
 
-    public function getNewHighRatingBooks(int $daysInterval): array
+    public function getBooksByPagination(int $pageOffset, SortOptions $sortOptions): array
     {
         $books = [];
 
-        foreach ($this->bookRepository->generatorNewHighRatingBooks($daysInterval) as $book) {
+        $sorter = new BookSorter($sortOptions);
+
+        $paginator = $this->bookRepository->getBooksPaginator()->setSorter($sorter)->paginate($pageOffset);
+
+        foreach ($paginator->getItems() as $book) {
             $books[] = (new BaseBook())
                 ->setBookId($book['id'])
                 ->setName($book['name'])
@@ -29,6 +36,11 @@ class BookService
                 ->setCirculation($book['circulation'])
                 ->setRating($book['avgRating']);
         };
+
+        $productPagination = (new ProductPagination())
+            ->setProducts(new BookCollection($books))
+            ->setCurrentPage($paginator->getCurrentPage())
+            ->setNumberPages($paginator->getNumberPages());
 
         return (new BookCollection($books))->toArray();
     }

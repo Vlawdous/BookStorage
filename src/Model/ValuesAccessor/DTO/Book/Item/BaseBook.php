@@ -2,7 +2,7 @@
 
 namespace App\Model\ValuesAccessor\DTO\Book\Item;
 
-use App\Model\ValuesAccessor\DTO\Base\Item\BaseProduct;
+use App\Model\ValuesAccessor\DTO\Product\Item\BaseProduct;
 
 class BaseBook extends BaseProduct
 {
