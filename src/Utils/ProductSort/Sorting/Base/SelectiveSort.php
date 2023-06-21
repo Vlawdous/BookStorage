@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Utils\Sort\Sorting\Base;
+namespace App\Utils\ProductSort\Sorting\Base;
 
-use App\Utils\Sort\Helper\SortOptions;
+use App\Utils\ProductSort\Helper\SortOptions;
 
 abstract class SelectiveSort extends AbstractSort
 {

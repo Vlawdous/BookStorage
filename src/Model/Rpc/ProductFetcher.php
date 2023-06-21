@@ -6,7 +6,7 @@ use App\Exception\UndefinedProductType;
 use App\Service\Book\BookService;
 use App\Service\Household\HouseholdService;
 use App\Service\Stationery\StationeryService;
-use App\Utils\Sort\Helper\SortOptions;
+use App\Utils\ProductSort\SortOptions;
 
 class ProductFetcher
 {

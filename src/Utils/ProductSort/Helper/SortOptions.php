@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Utils\Sort\Helper;
+namespace App\Utils\ProductSort\Helper;
 
 class SortOptions
 {
@@ -16,6 +16,7 @@ class SortOptions
 
     public function __construct(string $productType, array $sortOptions)
     {
+        $this->productType = $productType;
         $this->index = $sortOptions['index'] ?? null;
         $this->mode = $sortOptions['mode'] ?? null;
         $this->categoryId = $sortOptions['category'] ?? null;
@@ -32,7 +33,7 @@ class SortOptions
         return $this->categoryId != null;
     }
 
-    public function isSortingByPseudoCategory(): bool
+    public function hasPseudoCategorySorting(): bool
     {
         return $this->pseudoCategory != null;
     }

@@ -2,7 +2,7 @@
 
 namespace App\Utils\Pagination;
 
-use App\Utils\Sort\Sorter\Base\AbstractSorter;
+use App\Utils\ProductSort\Sorter\Base\AbstractSorter;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
 
@@ -15,10 +15,7 @@ class Paginator
     private ?int $currentPage = null;
 
 
-
     private QueryBuilder $qb;
-
-    private ?AbstractSorter $sorter = null;
 
     private int $pageSize;
 
@@ -28,13 +25,6 @@ class Paginator
 
         $pageSize = max(1, $pageSize);
         $this->pageSize = $pageSize;
-    }
-
-    public function setSorter(AbstractSorter $sorter): self
-    {
-        $this->sorter = $sorter;
-
-        return $this;
     }
 
     public function paginate(int $page): self
@@ -47,10 +37,6 @@ class Paginator
         $paginationQb = $this->qb
             ->setFirstResult($first)
             ->setMaxResults($this->pageSize);
-
-        if ($this->sorter) {
-            $paginationQb = $this->sorter->addSort($paginationQb);
-        }
 
         $query = $paginationQb->getQuery();
         $paginator = new DoctrinePaginator($query, true);

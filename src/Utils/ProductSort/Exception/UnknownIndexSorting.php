@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Utils\Sort\Exception;
+namespace App\Utils\ProductSort\Exception;
 
 use App\Exception\ExceptionCodes;
 

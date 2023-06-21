@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Utils\Sort\Helper;
+namespace App\Utils\ProductSort;
 
 use App\Utils\Sort\Sorting\CategorySorting\BookCategorySort;
-use App\Utils\Sort\Sorting\IndexSorting\NewSort;
-use App\Utils\Sort\Sorting\IndexSorting\PriceSort;
-use App\Utils\Sort\Sorting\IndexSorting\RatingSort;
+use App\Utils\ProductSort\Sorting\IndexSorting\NewSort;
+use App\Utils\ProductSort\Sorting\IndexSorting\PriceSort;
+use App\Utils\ProductSort\Sorting\IndexSorting\RatingSort;
 
 class SortConfig
 {
@@ -16,10 +16,12 @@ class SortConfig
     ];
 
     public const CATEGORY_SORTING_CLASSES = [
-        'book' => BookCategorySort::class
+        'book' => null,
+        'household' => null,
+        'stationery' => null
     ];
 
-    public const PSEUDOCATEGORY_SORTING_CLASSES = [
+    public const PSEUDO_CATEGORY_SORTING_CLASSES = [
         'book' => [
 
         ],

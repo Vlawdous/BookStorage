@@ -6,8 +6,8 @@ use App\Model\ValuesAccessor\DTO\Book\Collection\BookCollection;
 use App\Model\ValuesAccessor\DTO\Book\Item\BaseBook;
 use App\Model\ValuesAccessor\DTO\Product\Collection\ProductPagination;
 use App\Repository\Book\BookProductRepository;
-use App\Utils\Sort\Helper\SortOptions;
-use App\Utils\Sort\Sorter\BookSorter;
+use App\Utils\ProductSort\SortOptions;
+use App\Utils\ProductSort\Sorter\BookSorter;
 
 class BookService
 {
