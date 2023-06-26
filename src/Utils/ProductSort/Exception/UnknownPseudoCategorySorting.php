@@ -4,7 +4,7 @@ namespace App\Utils\ProductSort\Exception;
 
 use App\Exception\ExceptionCodes;
 
-class UnknownPseudoCategorySorting extends \Exception
+class UnknownPseudoCategorySorting extends SortErrorException
 {
     protected $message = 'Неизвестный тип сортировки по псевдокатегории';
 

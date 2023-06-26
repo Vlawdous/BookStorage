@@ -19,6 +19,6 @@ abstract class AbstractSort
     }
 
 
-    abstract public function addSort(): QueryBuilder;
+    abstract public function addSort(QueryBuilder $qb): QueryBuilder;
 
 }

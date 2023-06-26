@@ -2,14 +2,15 @@
 
 namespace App\Utils\ProductSort;
 
+use App\Utils\ProductSort\Exception\NotFoundBaseQueryForProductType;
 use App\Utils\ProductSort\Exception\UnknownCategorySorting;
+use App\Utils\ProductSort\Exception\UnknownIndexSorting;
 use App\Utils\ProductSort\Exception\UnknownProductTypeForPseudoCategory;
 use App\Utils\ProductSort\Exception\UnknownPseudoCategorySorting;
-use App\Utils\ProductSort\Exception\UnknownIndexSorting;
-use App\Utils\ProductSort\Sorting\Base\AbstractSort;
+use App\Utils\ProductSort\Helper\SortConfig;
 use App\Utils\ProductSort\Helper\SortOptions;
+use App\Utils\ProductSort\Sorting\Base\AbstractSort;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 
 class ProductSorter
@@ -24,32 +25,51 @@ class ProductSorter
         $this->sortOptions = $sortOptions;
     }
 
-    public function addSort(QueryBuilder $qb): QueryBuilder
+    public function addSort(): QueryBuilder
     {
+        $qb = $this->getBasePartQuery();
+
         if ($this->sortOptions->hasIndexSorting()) {
-            $qb = $this->addIndexSort();
+            $qb = $this->addIndexSort($qb);
 
             if ($this->sortOptions->hasCategorySorting()) {
                 $qb = $this->addCategorySorting($qb);
             }
         }
 
-        if ($this->sortOptions->isSortingByPseudoCategory()) {
+        if ($this->sortOptions->hasPseudoCategorySorting()) {
             $qb = $this->addPseudoCategorySort();
         }
 
         return $qb;
     }
 
-    private function addIndexSort(): QueryBuilder
+    private function getBasePartQuery(): QueryBuilder
     {
-        $qb = $this->handleSelectiveSorts(SortConfig::INDEX_SORTING_CLASSES);
+        $baseClasses = SortConfig::BASE_QUERY_CLASSES;
+        $productType = strtolower($this->sortOptions->getProductType());
 
-        if (!$qb) {
-            throw new UnknownIndexSorting();
+        if (!$baseClasses[$productType]) {
+            throw new NotFoundBaseQueryForProductType();
         }
 
-        return $qb;
+        return (new $baseClasses[$productType])->getBaseQuery();
+    }
+
+    private function addIndexSort(QueryBuilder $qb): QueryBuilder
+    {
+        foreach (SortConfig::INDEX_SORTING_CLASSES as $sortingClass) {
+            if ($sortingClass::isCurrentSorting($this->sortOptions)) {
+                /**
+                 * @var AbstractSort $sortingClass
+                 */
+                $sortingClass = new $sortingClass($this->entityManager, $this->sortOptions);
+
+                return $sortingClass->addSort($qb);
+            }
+        }
+
+        throw new UnknownIndexSorting();
     }
 
     private function addCategorySorting(QueryBuilder $qb): QueryBuilder
@@ -60,30 +80,17 @@ class ProductSorter
             throw new UnknownCategorySorting();
         }
 
-        return (new $categorySort($qb, $this->entityManager, $this->sortOptions))->addSort();
+        return (new $categorySort($this->entityManager, $this->sortOptions))->addSort($qb);
     }
 
-    private function addPseudoCategorySort(QueryBuilder $qb): QueryBuilder
+    private function addPseudoCategorySort(): QueryBuilder
     {
         $productType = strtolower($this->sortOptions->getProductType());
         if (!in_array($productType, SortConfig::PSEUDO_CATEGORY_SORTING_CLASSES)) {
             throw new UnknownProductTypeForPseudoCategory();
         }
 
-        $sortingClasses = SortConfig::PSEUDO_CATEGORY_SORTING_CLASSES[$productType];
-
-        $qb = $this->handleSelectiveSorts($sortingClasses);
-
-        if (!$qb) {
-            throw new UnknownPseudoCategorySorting();
-        }
-
-        return $qb;
-    }
-
-    private function handleSelectiveSorts(array $sorts): ?QueryBuilder
-    {
-        foreach ($sorts as $sortingClass) {
+        foreach (SortConfig::PSEUDO_CATEGORY_SORTING_CLASSES[$productType] as $sortingClass) {
             if ($sortingClass::isCurrentSorting($this->sortOptions)) {
                 /**
                  * @var AbstractSort $sortingClass
@@ -94,6 +101,6 @@ class ProductSorter
             }
         }
 
-        return null;
+        throw new UnknownPseudoCategorySorting();
     }
 }

@@ -4,7 +4,7 @@ namespace App\Utils\ProductSort\Exception;
 
 use App\Exception\ExceptionCodes;
 
-class UnknownIndexSorting extends \Exception
+class UnknownIndexSorting extends SortErrorException
 {
     protected $message = 'Неизвестный тип сортировки по индексу';
 

@@ -6,25 +6,31 @@ use App\Model\ValuesAccessor\DTO\Book\Collection\BookCollection;
 use App\Model\ValuesAccessor\DTO\Book\Item\BaseBook;
 use App\Model\ValuesAccessor\DTO\Product\Collection\ProductPagination;
 use App\Repository\Book\BookProductRepository;
-use App\Utils\ProductSort\SortOptions;
-use App\Utils\ProductSort\Sorter\BookSorter;
+use App\Utils\Pagination\Factory\PaginatorFactory;
+use App\Utils\ProductSort\Helper\SortOptions;
+use App\Utils\ProductSort\ProductSorterFactory;
 
 class BookService
 {
     private BookProductRepository $bookRepository;
 
-    public function __construct(BookProductRepository $bookRepository)
+    private ProductSorterFactory $sorterFactory;
+
+    private PaginatorFactory $paginatorFactory;
+
+    public function __construct(BookProductRepository $bookRepository, ProductSorterFactory $sorterFactory, PaginatorFactory $paginatorFactory)
     {
         $this->bookRepository = $bookRepository;
+        $this->sorterFactory = $sorterFactory;
+        $this->paginatorFactory = $paginatorFactory;
     }
 
     public function getBooksByPagination(int $pageOffset, SortOptions $sortOptions): array
     {
         $books = [];
 
-        $sorter = new BookSorter($sortOptions);
-
-        $paginator = $this->bookRepository->getBooksPaginator()->setSorter($sorter)->paginate($pageOffset);
+        $qb = $this->sorterFactory->createSorter($sortOptions)->addSort();
+        $paginator = $this->paginatorFactory->create($qb)->paginate($pageOffset);
 
         foreach ($paginator->getItems() as $book) {
             $books[] = (new BaseBook())

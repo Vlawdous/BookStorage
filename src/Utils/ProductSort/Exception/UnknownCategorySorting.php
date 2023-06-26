@@ -4,7 +4,7 @@ namespace App\Utils\ProductSort\Exception;
 
 use App\Exception\ExceptionCodes;
 
-class UnknownCategorySorting extends \Exception
+class UnknownCategorySorting extends SortErrorException
 {
     protected $message = 'Для данного типа продукта не предусмотрен обработчик категории';
 

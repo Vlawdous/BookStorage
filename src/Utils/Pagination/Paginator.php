@@ -2,7 +2,6 @@
 
 namespace App\Utils\Pagination;
 
-use App\Utils\ProductSort\Sorter\Base\AbstractSorter;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
 

@@ -4,7 +4,7 @@ namespace App\Utils\ProductSort\Exception;
 
 use App\Exception\ExceptionCodes;
 
-class UnknownProductTypeForPseudoCategory extends \Exception
+class UnknownProductTypeForPseudoCategory extends SortErrorException
 {
     protected $message = 'Для данного типа продукта отсутствуют псевдокатегории';
 
