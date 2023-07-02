@@ -48,6 +48,6 @@ class BookService
             ->setCurrentPage($paginator->getCurrentPage())
             ->setNumberPages($paginator->getNumberPages());
 
-        return (new BookCollection($books))->toArray();
+        return $productPagination->toArray();
     }
 }

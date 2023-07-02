@@ -48,8 +48,12 @@ class BaseProduct
         return $this;
     }
 
-    public function setRating(float $rating): self
+    public function setRating(?float $rating): self
     {
+        if ($rating === null) {
+            $rating = 0;
+        }
+
         $this->rating = $rating;
 
         return $this;

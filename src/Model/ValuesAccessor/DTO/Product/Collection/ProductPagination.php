@@ -12,18 +12,11 @@ class ProductPagination
 
     public function toArray(): array
     {
-        $result = ['products' => []];
-
-        foreach ($this->products as $product) {
-            $result['products'][] = $product->toArray();
-        }
-
-        $result = [
+        return [
+            ...$this->products->toArray(),
             'currentPage' => $this->currentPage,
             'numberPages' => $this->numberPages
         ];
-
-        return $result;
     }
 
     /**
