@@ -6,7 +6,7 @@ use App\Exception\UndefinedProductType;
 use App\Service\Book\BookService;
 use App\Service\Household\HouseholdService;
 use App\Service\Stationery\StationeryService;
-use App\Utils\ProductSort\SortOptions;
+use App\Utils\ProductSort\Helper\SortOptions;
 
 class ProductFetcher
 {
@@ -34,7 +34,7 @@ class ProductFetcher
 //                case 'Stationery':
 //                    return $this->stationeryService->getStationeries();
             }
-        } catch (\Exception) {
+        } catch (\Exception $e) {
             throw new \Exception('Непредвиденная системная ошибка в процессе получения данных.', 500);
         }
 

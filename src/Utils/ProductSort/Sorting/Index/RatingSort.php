@@ -15,11 +15,6 @@ class RatingSort extends SelectiveSort
 
     public function addSort(QueryBuilder $qb): QueryBuilder
     {
-        $columns = $qb->getDQLPart('select');
-
-        return $qb->leftJoin('p.rating', 'r')
-            ->addSelect('AVG(r.value) as avgRating')
-            ->addGroupBy($columns)
-            ->orderBy('avgRating',  strtoupper($this->sortOption->getMode()));
+        return $qb->addOrderBy('avgRating',  strtoupper($this->sortOption->getMode()));
     }
 }

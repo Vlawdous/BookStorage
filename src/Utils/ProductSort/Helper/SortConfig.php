@@ -2,7 +2,10 @@
 
 namespace App\Utils\ProductSort\Helper;
 
+use App\Utils\ProductSort\BaseQueryGetter\BookBaseQuery;
 use App\Utils\ProductSort\BaseQueryGetter\HouseholdBaseQuery;
+use App\Utils\ProductSort\BaseQueryGetter\StationeryBaseQuery;
+use App\Utils\ProductSort\Sorting\Index\CategorySorting\HouseholdCategorySort;
 use App\Utils\ProductSort\Sorting\Index\NewSort;
 use App\Utils\ProductSort\Sorting\Index\PriceSort;
 use App\Utils\ProductSort\Sorting\Index\RatingSort;
@@ -10,9 +13,9 @@ use App\Utils\ProductSort\Sorting\Index\RatingSort;
 class SortConfig
 {
     public const BASE_QUERY_CLASSES = [
-        'book' => HouseholdBaseQuery::class,
-        'household' => null,
-        'stationery' => null
+        'book' => BookBaseQuery::class,
+        'household' => HouseholdBaseQuery::class,
+        'stationery' => StationeryBaseQuery::class
     ];
 
     public const INDEX_SORTING_CLASSES = [
@@ -22,7 +25,7 @@ class SortConfig
     ];
 
     public const CATEGORY_SORTING_CLASSES = [
-        'book' => null,
+        'book' => HouseholdCategorySort::class,
         'household' => null,
         'stationery' => null
     ];

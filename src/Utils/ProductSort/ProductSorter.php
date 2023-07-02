@@ -10,7 +10,7 @@ use App\Utils\ProductSort\Exception\UnknownPseudoCategorySorting;
 use App\Utils\ProductSort\Helper\SortConfig;
 use App\Utils\ProductSort\Helper\SortOptions;
 use App\Utils\ProductSort\Sorting\Base\AbstractSort;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Doctrine\ORM\QueryBuilder;
 
 class ProductSorter
@@ -33,12 +33,12 @@ class ProductSorter
             $qb = $this->addIndexSort($qb);
 
             if ($this->sortOptions->hasCategorySorting()) {
-                $qb = $this->addCategorySorting($qb);
+                $qb = $this->addCategorySort($qb);
             }
         }
 
         if ($this->sortOptions->hasPseudoCategorySorting()) {
-            $qb = $this->addPseudoCategorySort();
+            $qb = $this->addPseudoCategorySort($qb);
         }
 
         return $qb;
@@ -53,7 +53,7 @@ class ProductSorter
             throw new NotFoundBaseQueryForProductType();
         }
 
-        return (new $baseClasses[$productType])->getBaseQuery();
+        return (new $baseClasses[$productType]($this->entityManager, $this->sortOptions))->getBaseQuery();
     }
 
     private function addIndexSort(QueryBuilder $qb): QueryBuilder
@@ -72,7 +72,7 @@ class ProductSorter
         throw new UnknownIndexSorting();
     }
 
-    private function addCategorySorting(QueryBuilder $qb): QueryBuilder
+    private function addCategorySort(QueryBuilder $qb): QueryBuilder
     {
         $categorySorts = SortConfig::CATEGORY_SORTING_CLASSES;
 
@@ -83,7 +83,7 @@ class ProductSorter
         return (new $categorySort($this->entityManager, $this->sortOptions))->addSort($qb);
     }
 
-    private function addPseudoCategorySort(): QueryBuilder
+    private function addPseudoCategorySort(QueryBuilder $qb): QueryBuilder
     {
         $productType = strtolower($this->sortOptions->getProductType());
         if (!in_array($productType, SortConfig::PSEUDO_CATEGORY_SORTING_CLASSES)) {
@@ -97,7 +97,7 @@ class ProductSorter
                  */
                 $sortingClass = new $sortingClass($this->entityManager, $this->sortOptions);
 
-                return $sortingClass->addSort();
+                return $sortingClass->addSort($qb);
             }
         }
 

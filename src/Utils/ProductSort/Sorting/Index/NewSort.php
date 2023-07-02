@@ -15,6 +15,7 @@ class NewSort extends SelectiveSort
 
     public function addSort(QueryBuilder $qb): QueryBuilder
     {
-        return $qb->addOrderBy('p.dateAdd', strtoupper($this->sortOption->getMode()));
+        return $qb->addOrderBy('p.dateAdd', strtoupper($this->sortOption->getMode()))
+            ->addGroupBy('p.dateAdd');
     }
 }

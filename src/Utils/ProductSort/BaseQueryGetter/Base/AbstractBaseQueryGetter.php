@@ -3,10 +3,10 @@
 namespace App\Utils\ProductSort\BaseQueryGetter\Base;
 
 use App\Utils\ProductSort\Helper\SortOptions;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Doctrine\ORM\QueryBuilder;
 
-abstract class ABaseQueryGetter
+abstract class AbstractBaseQueryGetter
 {
     protected EntityManager $entityManager;
     protected SortOptions $sortOptions;

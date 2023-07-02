@@ -3,7 +3,7 @@
 namespace App\Utils\ProductSort;
 
 use App\Utils\ProductSort\Helper\SortOptions;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface as EntityManager;
 
 class ProductSorterFactory
 {

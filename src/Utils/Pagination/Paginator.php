@@ -39,6 +39,7 @@ class Paginator
 
         $query = $paginationQb->getQuery();
         $paginator = new DoctrinePaginator($query, true);
+        $paginator->setUseOutputWalkers(false);
 
         $this->numberPages = $paginator->count();
         $this->items = $paginator->getIterator();
