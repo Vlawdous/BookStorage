@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model\ValuesAccessor\DTO\Base\Item;
+namespace App\Model\ValuesAccessor\DTO\Product\Item;
 
 class BaseProduct
 {
@@ -48,8 +48,12 @@ class BaseProduct
         return $this;
     }
 
-    public function setRating(float $rating): self
+    public function setRating(?float $rating): self
     {
+        if ($rating === null) {
+            $rating = 0;
+        }
+
         $this->rating = $rating;
 
         return $this;

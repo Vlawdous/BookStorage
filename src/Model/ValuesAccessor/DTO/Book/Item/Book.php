@@ -2,8 +2,6 @@
 
 namespace App\Model\ValuesAccessor\DTO\Book\Item;
 
-use App\Model\ValuesAccessor\VO\Book\CoverType;
-
 class Book extends BaseBook
 {
     private array $bookCategories;
@@ -20,7 +18,7 @@ class Book extends BaseBook
 
     private string $width;
 
-    private CoverType $coverType;
+    private string $coverType;
 
     public function toArray(): array
     {
@@ -33,7 +31,7 @@ class Book extends BaseBook
             'horizontalLength' => $this->horizontalLength,
             'verticalLength' => $this->verticalLength,
             'width' => $this->width,
-            'coverType' => $this->coverType->getCoverType()
+            'coverType' => $this->coverType
         ];
     }
 
@@ -86,7 +84,7 @@ class Book extends BaseBook
         return $this;
     }
 
-    public function setCoverType(CoverType $coverType): self
+    public function setCoverType(string $coverType): self
     {
         $this->coverType = $coverType;
 

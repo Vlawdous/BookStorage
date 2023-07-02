@@ -41,6 +41,9 @@ class Product
     #[ORM\ManyToMany(targetEntity: ProductTag::class, mappedBy: 'products')]
     private Collection $productTags;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateAdd = null;
+
     public function __construct()
     {
         $this->ratings = new ArrayCollection();
@@ -177,6 +180,18 @@ class Product
         if ($this->productTags->removeElement($productTag)) {
             $productTag->removeProduct($this);
         }
+
+        return $this;
+    }
+
+    public function getDateAdd(): ?\DateTimeInterface
+    {
+        return $this->dateAdd;
+    }
+
+    public function setDateAdd(\DateTimeInterface $dateAdd): self
+    {
+        $this->dateAdd = $dateAdd;
 
         return $this;
     }
